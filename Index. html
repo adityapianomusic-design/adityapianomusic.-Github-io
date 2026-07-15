@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Salary Slip Generator</title>
+    <!-- Tailwind CSS for clean and fast UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Print Styles: Taaki print/PDF download karte waqt sirf Salary Slip hi dikhe, baki form aur buttons hide ho jayein */
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #payslip-container {
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            .print-full-width {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-blue-600 text-white py-6 shadow-md no-print">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl font-bold">Professional Salary Slip Generator</h1>
+            <p class="text-sm mt-1 opacity-90">Enter details on the left, download your professional PDF on the right!</p>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 print-full-width">
+        
+        <!-- LEFT PANEL: INPUT FORM (Hidden during print) -->
+        <section class="lg:col-span-5 bg-white p-6 rounded-lg shadow-md no-print space-y-6">
+            <h2 class="text-xl font-semibold border-b pb-2 text-blue-600">1. Company & Employee Details</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Company Name</label>
+                    <input type="text" id="in-comp-name" value="Apex Technologies Pvt. Ltd." class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Company Address</label>
+                    <input type="text" id="in-comp-addr" value="Sector 62, Noida, UP, India" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Employee Name</label>
+                    <input type="text" id="in-emp-name" value="Ritesh Kumar" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Employee ID</label>
+                    <input type="text" id="in-emp-id" value="EMP-2026-089" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Designation</label>
+                    <input type="text" id="in-designation" value="Web Developer" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Month & Year</label>
+                    <input type="text" id="in-month" value="July 2026" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Bank Name</label>
+                    <input type="text" id="in-bank" value="State Bank of India" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">A/C Number</label>
+                    <input type="text" id="in-ac" value="XXXXXX9845" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-blue-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold border-b pb-2 text-green-600 pt-2">2. Earnings (Kamai)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Basic Salary (₹)</label>
+                    <input type="number" id="in-basic" value="35000" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-green-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">HRA (₹)</label>
+                    <input type="number" id="in-hra" value="12000" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-green-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Medical Allowance (₹)</label>
+                    <input type="number" id="in-med" value="2500" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-green-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Special Allowance (₹)</label>
+                    <input type="number" id="in-spec" value="5000" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-green-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold border-b pb-2 text-red-600 pt-2">3. Deductions (K कटौती)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Provident Fund / PF (₹)</label>
+                    <input type="number" id="in-pf" value="1800" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-red-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Professional Tax (₹)</label>
+                    <input type="number" id="in-pt" value="200" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-red-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">TDS / Income Tax (₹)</label>
+                    <input type="number" id="in-tax" value="1500" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-red-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase">Other Deductions (₹)</label>
+                    <input type="number" id="in-other" value="0" class="w-full mt-1 p-2 border rounded focus:ring-2 focus:ring-red-400 outline-none text-sm" oninput="updatePayslip()">
+                </div>
+            </div>
+
+            <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow transition duration-200 mt-4 flex justify-center items-center gap-2">
+                Download / Print Salary Slip 🖨️
+            </button>
+        </section>
+
+        <!-- RIGHT PANEL: LIVE PREVIEW (Visible during print) -->
+        <section class="lg:col-span-7 print-full-width">
+            <div id="payslip-container" class="bg-white p-8 rounded-lg shadow-md border border-gray-200 max-w-4xl mx-auto">
+                
+                <!-- Payslip Header -->
+                <div class="text-center border-b-2 border-gray-800 pb-4">
+                    <h2 id="slip-comp-name" class="text-2xl font-bold text-gray-900 uppercase">Apex Technologies Pvt. Ltd.</h2>
+                    <p id="slip-comp-addr" class="text-sm text-gray-600">Sector 62, Noida, UP, India</p>
+                    <h3 class="text-lg font-semibold bg-gray-100 py-1 px-3 mt-3 inline-block rounded uppercase tracking-wider">Salary Slip</h3>
+                </div>
+
+                <!-- Employee & Bank Info Block -->
+                <div class="grid grid-cols-2 gap-y-2 py-4 text-sm border-b border-gray-300">
+                    <div><strong>Employee Name:</strong> <span id="slip-emp-name">Ritesh Kumar</span></div>
+                    <div><strong>Month & Year:</strong> <span id="slip-month">July 2026</span></div>
+                    <div><strong>Employee ID:</strong> <span id="slip-emp-id">EMP-2026-089</span></div>
+                    <div><strong>Bank Name:</strong> <span id="slip-bank">State Bank of India</span></div>
+                    <div><strong>Designation:</strong> <span id="slip-designation">Web Developer</span></div>
+                    <div><strong>Bank A/C No:</strong> <span id="slip-ac">XXXXXX9845</span></div>
+                </div>
+
+                <!-- Earnings and Deductions Table Grid -->
+                <div class="grid grid-cols-2 border-b border-gray-300">
+                    <!-- Earnings Column -->
+                    <div class="border-r border-gray-300 pr-4 py-4">
+                        <h4 class="font-bold text-gray-700 border-b pb-1 mb-2">EARNINGS</h4>
+                        <table class="w-full text-sm">
+                            <tr class="h-8">
+                                <td class="text-gray-600">Basic Salary</td>
+                                <td class="text-right font-semibold">₹<span id="slip-basic">35,000</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">House Rent Allowance (HRA)</td>
+                                <td class="text-right font-semibold">₹<span id="slip-hra">12,000</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">Medical Allowance</td>
+                                <td class="text-right font-semibold">₹<span id="slip-med">2,500</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">Special Allowance</td>
+                                <td class="text-right font-semibold">₹<span id="slip-spec">5,000</span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Deductions Column -->
+                    <div class="pl-4 py-4">
+                        <h4 class="font-bold text-gray-700 border-b pb-1 mb-2">DEDUCTIONS</h4>
+                        <table class="w-full text-sm">
+                            <tr class="h-8">
+                                <td class="text-gray-600">Provident Fund (PF)</td>
+                                <td class="text-right font-semibold">₹<span id="slip-pf">1,800</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">Professional Tax</td>
+                                <td class="text-right font-semibold">₹<span id="slip-pt">200</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">TDS / Income Tax</td>
+                                <td class="text-right font-semibold">₹<span id="slip-tax">1,500</span></td>
+                            </tr>
+                            <tr class="h-8">
+                                <td class="text-gray-600">Other Deductions</td>
+                                <td class="text-right font-semibold">₹<span id="slip-other">0</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Totals Row -->
+                <div class="grid grid-cols-2 text-sm font-bold bg-gray-50 py-3 border-b border-gray-300">
+                    <div class="border-r border-gray-300 pr-4 flex justify-between">
+                        <span>Total Earnings:</span>
+                        <span>₹<span id="slip-total-earn">54,500</span></span>
+                    </div>
+                    <div class="pl-4 flex justify-between">
+                        <span>Total Deductions:</span>
+                        <span>₹<span id="slip-total-ded">3,500</span></span>
+                    </div>
+                </div>
+
+                <!-- Net Salary Block -->
+                <div class="my-6 p-4 bg-blue-50 border border-blue-200 rounded flex justify-between items-center">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-blue-800 tracking-wider">Net Salary Payable</span>
+                        <div class="text-sm text-gray-600 mt-1 italic">In Words: <span id="slip-words" class="font-semibold text-gray-800">Fifty-One Thousand Rupees Only</span></div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-2xl font-extrabold text-blue-900">₹<span id="slip-net">51,000</span></span>
+                    </div>
+                </div>
+
+                <!-- Footer Signatures -->
+                <div class="grid grid-cols-2 gap-4 mt-12 pt-8 border-t border-dashed border-gray-300 text-sm">
+                    <div class="text-center">
+                        <div class="w-40 border-b border-gray-400 mx-auto mb-2"></div>
+                        <p class="text-gray-500 text-xs">Employee Signature</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-40 border-b border-gray-400 mx-auto mb-2"></div>
+                        <p class="text-gray-500 text-xs">Authorized Signatory</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic to Auto-Calculate Values & Number to Words -->
+    <script>
+        // Helper to format numbers in Indian Currency (Lakh, Thousand format)
+        function formatINR(number) {
+            return new Intl.NumberFormat('en-IN').format(number);
+        }
+
+        // Indian Number to Words Generator Logic
+        function numberToWords(num) {
+            const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+            const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+            if ((num = num.toString()).length > 9) return 'Limit Exceeded';
+            let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            if (!n) return ''; 
+            
+            let str = '';
+            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Rupees Only' : 'Rupees Only';
+            return str.trim();
+        }
+
+        // Main Function to Update Values dynamically
+        function updatePayslip() {
+            // Get inputs
+            const compName = document.getElementById('in-comp-name').value;
+            const compAddr = document.getElementById('in-comp-addr').value;
+            const empName = document.getElementById('in-emp-name').value;
+            const empId = document.getElementById('in-emp-id').value;
+            const designation = document.getElementById('in-designation').value;
+            const month = document.getElementById('in-month').value;
+            const bank = document.getElementById('in-bank').value;
+            const ac = document.getElementById('in-ac').value;
+
+            const basic = parseFloat(document.getElementById('in-basic').value) || 0;
+            const hra = parseFloat(document.getElementById('in-hra').value) || 0;
+            const med = parseFloat(document.getElementById('in-med').value) || 0;
+            const spec = parseFloat(document.getElementById('in-spec').value) || 0;
+
+            const pf = parseFloat(document.getElementById('in-pf').value) || 0;
+            const pt = parseFloat(document.getElementById('in-pt').value) || 0;
+            const tax = parseFloat(document.getElementById('in-tax').value) || 0;
+            const other = parseFloat(document.getElementById('in-other').value) || 0;
+
+            // Calculate totals
+            const totalEarnings = basic + hra + med + spec;
+            const totalDeductions = pf + pt + tax + other;
+            const netSalary = totalEarnings - totalDeductions;
+
+            // Map inputs to slip output preview
+            document.getElementById('slip-comp-name').innerText = compName || 'Company Name';
+            document.getElementById('slip-comp-addr').innerText = compAddr || 'Company Address';
+            document.getElementById('slip-emp-name').innerText = empName || '-';
+            document.getElementById('slip-month').innerText = month || '-';
+            document.getElementById('slip-emp-id').innerText = empId || '-';
+            document.getElementById('slip-bank').innerText = bank || '-';
+            document.getElementById('slip-designation').innerText = designation || '-';
+            document.getElementById('slip-ac').innerText = ac || '-';
+
+            document.getElementById('slip-basic').innerText = formatINR(basic);
+            document.getElementById('slip-hra').innerText = formatINR(hra);
+            document.getElementById('slip-med').innerText = formatINR(med);
+            document.getElementById('slip-spec').innerText = formatINR(spec);
+
+            document.getElementById('slip-pf').innerText = formatINR(pf);
+            document.getElementById('slip-pt').innerText = formatINR(pt);
+            document.getElementById('slip-tax').innerText = formatINR(tax);
+            document.getElementById('slip-other').innerText = formatINR(other);
+
+            document.getElementById('slip-total-earn').innerText = formatINR(totalEarnings);
+            document.getElementById('slip-total-ded').innerText = formatINR(totalDeductions);
+            document.getElementById('slip-net').innerText = formatINR(netSalary);
+
+            // Set Words translation
+            document.getElementById('slip-words').innerText = numberToWords(netSalary > 0 ? netSalary : 0);
+        }
+
+        // Initialize values on first load
+        window.onload = function() {
+            updatePayslip();
+        };
+    </script>
+</body>
+</html>
